@@ -58,19 +58,34 @@ export default function GoalsList({ user }: GoalsListProps) {
         </div>
       )}
 
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {goals.map((goal) => (
+          <GoalCard key={goal.id} goal={goal} onUpdate={fetchGoals} user={user} />
+        ))}
+      </div>
+
       {isFormOpen && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4">
-          <div className="bg-dark-800 rounded-lg p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <GoalForm onSuccess={handleSuccess} onCancel={() => setIsFormOpen(false)} user={user} />
+        <div className="fixed inset-0 z-50 overflow-y-auto">
+          <div className="flex min-h-full items-center justify-center p-4 text-center">
+            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setIsFormOpen(false)} />
+            <div className="relative transform overflow-hidden rounded-lg bg-dark-800 p-6 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-2xl">
+              <div className="absolute right-0 top-0 pr-4 pt-4">
+                <button
+                  type="button"
+                  onClick={() => setIsFormOpen(false)}
+                  className="rounded-md text-gray-400 hover:text-gray-300 focus:outline-none"
+                >
+                  <span className="sr-only">Close</span>
+                  <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              <GoalForm onSuccess={handleSuccess} onCancel={() => setIsFormOpen(false)} user={user} />
+            </div>
           </div>
         </div>
       )}
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {goals.map((goal) => (
-          <GoalCard key={goal.id} goal={goal} onUpdate={fetchGoals} />
-        ))}
-      </div>
     </div>
   )
 } 

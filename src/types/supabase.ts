@@ -6,13 +6,9 @@ export interface Goal {
   id: string
   user_id: string
   name: string
-  title: string
-  description: string
   category: string
   status: string
-  due_date: string
-  frequency: string
-  logic_type: string
+  due_date: string | null
   target_value: number
   unit: string
   created_at: string

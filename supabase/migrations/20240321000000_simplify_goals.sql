@@ -1,0 +1,4 @@
+ALTER TABLE goals
+DROP COLUMN IF EXISTS description,
+DROP COLUMN IF EXISTS frequency,
+DROP COLUMN IF EXISTS logic_type; 

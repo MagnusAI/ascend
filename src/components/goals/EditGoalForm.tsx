@@ -1,21 +1,23 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 import Text from '../atoms/Text'
-import { User } from '../../types/supabase'
+import { User, Goal } from '../../types/supabase'
 
-interface GoalFormProps {
+interface EditGoalFormProps {
+  goal: Goal
   onSuccess: () => void
   onCancel: () => void
   user: User
 }
 
-export default function GoalForm({ onSuccess, onCancel, user }: GoalFormProps) {
+export default function EditGoalForm({ goal, onSuccess, onCancel, user }: EditGoalFormProps) {
   const [formData, setFormData] = useState({
-    name: '',
-    category: 'other',
-    target_value: 0,
-    unit: '',
-    due_date: ''
+    name: goal.name,
+    category: goal.category,
+    status: goal.status,
+    target_value: goal.target_value,
+    unit: goal.unit,
+    due_date: goal.due_date || ''
   })
   const [error, setError] = useState<string | null>(null)
 
@@ -24,38 +26,30 @@ export default function GoalForm({ onSuccess, onCancel, user }: GoalFormProps) {
     if (!user) return
 
     try {
-      console.log('User ID:', user.id) // Debug log
       const { error } = await supabase
         .from('goals')
-        .insert([
-          {
-            user_id: user.id,
-            name: formData.name,
-            category: formData.category,
-            status: 'in_progress', // Always set to in_progress on create
-            due_date: formData.due_date || null,
-            target_value: formData.target_value,
-            unit: formData.unit
-          }
-        ])
-        .select()
+        .update({
+          name: formData.name,
+          category: formData.category,
+          status: formData.status,
+          due_date: formData.due_date || null,
+          target_value: formData.target_value,
+          unit: formData.unit
+        })
+        .eq('id', goal.id)
 
-      if (error) {
-        console.error('Error inserting goal:', error) // Debug log
-        throw error
-      }
-
+      if (error) throw error
       onSuccess()
     } catch (error) {
       console.error('Error:', error)
-      setError('Failed to create goal')
+      setError('Failed to update goal')
     }
   }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div>
-        <Text variant="accent" size="lg">Create New Goal</Text>
+        <Text variant="accent" size="lg">Edit Goal</Text>
       </div>
 
       {error && (
@@ -89,6 +83,19 @@ export default function GoalForm({ onSuccess, onCancel, user }: GoalFormProps) {
               <option value="work">Work</option>
               <option value="health">Health</option>
               <option value="other">Other</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-300">Status</label>
+            <select
+              value={formData.status}
+              onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+              className="mt-1 block w-full rounded-md bg-dark-700 border-dark-600 text-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
+            >
+              <option value="in_progress">In Progress</option>
+              <option value="completed">Completed</option>
+              <option value="on_hold">On Hold</option>
             </select>
           </div>
         </div>
@@ -139,7 +146,7 @@ export default function GoalForm({ onSuccess, onCancel, user }: GoalFormProps) {
           type="submit"
           className="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors"
         >
-          Create Goal
+          Save Changes
         </button>
       </div>
     </form>

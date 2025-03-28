@@ -1,14 +1,16 @@
 import { useState } from 'react'
 import { supabase } from '../../lib/supabase'
 import Text from '../atoms/Text'
-import { Goal } from '../../types/supabase'
+import { Goal, User } from '../../types/supabase'
+import EditGoalForm from './EditGoalForm'
 
 interface GoalCardProps {
   goal: Goal
   onUpdate: () => void
+  user: User
 }
 
-export default function GoalCard({ goal, onUpdate }: GoalCardProps) {
+export default function GoalCard({ goal, onUpdate, user }: GoalCardProps) {
   const [isEditing, setIsEditing] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -29,21 +31,37 @@ export default function GoalCard({ goal, onUpdate }: GoalCardProps) {
     }
   }
 
+  if (isEditing) {
+    return (
+      <div className="border-2 border-dark-800 rounded-lg p-6 bg-dark-800/50 backdrop-blur-sm shadow-neon">
+        <EditGoalForm
+          goal={goal}
+          onSuccess={() => {
+            setIsEditing(false)
+            onUpdate()
+          }}
+          onCancel={() => setIsEditing(false)}
+          user={user}
+        />
+      </div>
+    )
+  }
+
   return (
     <div className="border-2 border-dark-800 rounded-lg p-6 bg-dark-800/50 backdrop-blur-sm shadow-neon">
       <div className="flex justify-between items-start">
         <div>
           <Text variant="accent" size="lg">{goal.name}</Text>
           <Text variant="muted" size="sm" className="mt-1">
-            {goal.category} • {goal.frequency || 'No frequency'}
+            {goal.category}
           </Text>
         </div>
         <div className="flex space-x-2">
           <button
-            onClick={() => setIsEditing(!isEditing)}
+            onClick={() => setIsEditing(true)}
             className="p-1 text-primary-400 hover:text-primary-300 hover:bg-dark-700 rounded-md transition-colors duration-200"
           >
-            {isEditing ? 'Cancel' : 'Edit'}
+            Edit
           </button>
           <button
             onClick={handleDelete}
@@ -62,14 +80,6 @@ export default function GoalCard({ goal, onUpdate }: GoalCardProps) {
 
       <div className="mt-4 space-y-2">
         <Text variant="muted" size="sm">
-          Title: {goal.title}
-        </Text>
-        {goal.description && (
-          <Text variant="muted" size="sm">
-            Description: {goal.description}
-          </Text>
-        )}
-        <Text variant="muted" size="sm">
           Status: {goal.status}
         </Text>
         {goal.due_date && (
@@ -79,9 +89,6 @@ export default function GoalCard({ goal, onUpdate }: GoalCardProps) {
         )}
         <Text variant="muted" size="sm">
           Target: {goal.target_value} {goal.unit}
-        </Text>
-        <Text variant="muted" size="sm">
-          Logic Type: {goal.logic_type}
         </Text>
       </div>
     </div>
