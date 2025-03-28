@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
 import { useNavigate } from 'react-router-dom'
+import Button from './atoms/Button'
 
 export default function Dashboard() {
   const [user, setUser] = useState<any>(null)
@@ -35,12 +36,12 @@ export default function Dashboard() {
             </div>
             <div className="flex items-center space-x-4">
               <span className="text-dark-300">{user.email}</span>
-              <button
+              <Button
+                variant="secondary"
                 onClick={handleSignOut}
-                className="btn-secondary"
               >
                 Sign Out
-              </button>
+              </Button>
             </div>
           </div>
         </div>

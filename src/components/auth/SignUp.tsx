@@ -1,15 +1,22 @@
 import { useState } from 'react'
 import { supabase } from '../../lib/supabase'
 import { useNavigate, Link } from 'react-router-dom'
+import Button from '../atoms/Button'
+import Input from '../atoms/Input'
+import Form from '../molecules/Form'
 
 export default function SignUp() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
   const navigate = useNavigate()
 
-  const handleSignUp = async (e: React.FormEvent) => {
+  const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    setIsLoading(true)
+    setError(null)
+    
     try {
       const { error } = await supabase.auth.signUp({
         email,
@@ -19,6 +26,8 @@ export default function SignUp() {
       navigate('/dashboard')
     } catch (error) {
       setError(error instanceof Error ? error.message : 'An error occurred')
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -33,53 +42,45 @@ export default function SignUp() {
             Join us to start tracking your goals
           </p>
         </div>
-        <form className="mt-8 space-y-6" onSubmit={handleSignUp}>
+        <Form onSubmit={handleSignUp}>
           {error && (
             <div className="rounded-lg bg-red-900/50 p-4 border border-red-500">
               <div className="text-sm text-red-200">{error}</div>
             </div>
           )}
           <div className="space-y-4">
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-dark-300">
-                Email address
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                className="input mt-1"
-                placeholder="you@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-dark-300">
-                Password
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="new-password"
-                required
-                className="input mt-1"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
+            <Input
+              id="email"
+              name="email"
+              type="email"
+              label="Email address"
+              autoComplete="email"
+              required
+              placeholder="you@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <Input
+              id="password"
+              name="password"
+              type="password"
+              label="Password"
+              autoComplete="new-password"
+              required
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
           </div>
 
-          <div>
-            <button type="submit" className="btn-primary w-full">
-              Sign up
-            </button>
-          </div>
-        </form>
+          <Button
+            type="submit"
+            className="w-full"
+            isLoading={isLoading}
+          >
+            Sign up
+          </Button>
+        </Form>
 
         <div className="text-center">
           <p className="text-sm text-dark-400">
