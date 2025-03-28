@@ -29,7 +29,7 @@ function App() {
   }
 
   return (
-    <Router>
+    <Router basename="/ascend">
       <Routes>
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
