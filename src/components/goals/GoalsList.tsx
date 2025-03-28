@@ -3,11 +3,7 @@ import { supabase } from '../../lib/supabase'
 import GoalCard from './GoalCard'
 import GoalForm from './GoalForm'
 import Text from '../atoms/Text'
-import { User, Goal } from '../../types/supabase'
-
-interface GoalsListProps {
-  user: User
-}
+import { GoalsListProps, Goal } from '../../types/components'
 
 export default function GoalsList({ user }: GoalsListProps) {
   const [goals, setGoals] = useState<Goal[]>([])

@@ -1,175 +1,148 @@
 import { useState } from 'react'
-import { goalsService } from '../../services/goals'
 import { CreateGoalInput, GoalCategory, GoalFrequency, GoalLogicType } from '../../types/goals'
-import Text from '../atoms/Text'
-import Button from '../atoms/Button'
 
 interface CreateGoalFormProps {
-    onSuccess: () => void
+    onSubmit: (data: CreateGoalInput) => void
     onCancel: () => void
 }
 
-export default function CreateGoalForm({ onSuccess, onCancel }: CreateGoalFormProps) {
-    const [isLoading, setIsLoading] = useState(false)
-    const [error, setError] = useState<string | null>(null)
+export default function CreateGoalForm({ onSubmit, onCancel }: CreateGoalFormProps) {
     const [formData, setFormData] = useState<CreateGoalInput>({
         name: '',
-        category: 'strength',
+        category: 'other',
         unit: '',
         target_value: 0,
         frequency: 'daily',
         logic_type: 'SUM'
     })
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
-        setIsLoading(true)
-        setError(null)
-
-        try {
-            await goalsService.createGoal(formData)
-            onSuccess()
-        } catch (err: any) {
-            setError(err.message)
-        } finally {
-            setIsLoading(false)
-        }
-    }
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        const { name, value } = e.target
-        setFormData(prev => ({
-            ...prev,
-            [name]: name === 'target_value' ? parseFloat(value) : value
-        }))
+        onSubmit(formData)
     }
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-                <label htmlFor="name" className="block text-sm font-medium text-primary-400 mb-1">
-                    Goal Name
-                </label>
-                <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 bg-dark-700 border border-dark-600 rounded-md text-primary-100 focus:outline-none focus:ring-2 focus:ring-primary-500"
-                    required
-                />
-            </div>
-
-            <div>
-                <label htmlFor="category" className="block text-sm font-medium text-primary-400 mb-1">
-                    Category
-                </label>
-                <select
-                    id="category"
-                    name="category"
-                    value={formData.category}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 bg-dark-700 border border-dark-600 rounded-md text-primary-100 focus:outline-none focus:ring-2 focus:ring-primary-500"
-                >
-                    <option value="strength">Strength</option>
-                    <option value="cardio">Cardio</option>
-                    <option value="nutrition">Nutrition</option>
-                    <option value="mental">Mental</option>
-                    <option value="habit">Habit</option>
-                    <option value="other">Other</option>
-                </select>
-            </div>
-
-            <div>
-                <label htmlFor="unit" className="block text-sm font-medium text-primary-400 mb-1">
-                    Unit
-                </label>
-                <input
-                    type="text"
-                    id="unit"
-                    name="unit"
-                    value={formData.unit}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 bg-dark-700 border border-dark-600 rounded-md text-primary-100 focus:outline-none focus:ring-2 focus:ring-primary-500"
-                    required
-                />
-            </div>
-
-            <div>
-                <label htmlFor="target_value" className="block text-sm font-medium text-primary-400 mb-1">
-                    Target Value
-                </label>
-                <input
-                    type="number"
-                    id="target_value"
-                    name="target_value"
-                    value={formData.target_value}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 bg-dark-700 border border-dark-600 rounded-md text-primary-100 focus:outline-none focus:ring-2 focus:ring-primary-500"
-                    required
-                    min="0"
-                    step="any"
-                />
-            </div>
-
-            <div>
-                <label htmlFor="frequency" className="block text-sm font-medium text-primary-400 mb-1">
-                    Frequency
-                </label>
-                <select
-                    id="frequency"
-                    name="frequency"
-                    value={formData.frequency}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 bg-dark-700 border border-dark-600 rounded-md text-primary-100 focus:outline-none focus:ring-2 focus:ring-primary-500"
-                >
-                    <option value="daily">Daily</option>
-                    <option value="weekly">Weekly</option>
-                    <option value="monthly">Monthly</option>
-                    <option value="one-time">One Time</option>
-                </select>
-            </div>
-
-            <div>
-                <label htmlFor="logic_type" className="block text-sm font-medium text-primary-400 mb-1">
-                    Progress Type
-                </label>
-                <select
-                    id="logic_type"
-                    name="logic_type"
-                    value={formData.logic_type}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 bg-dark-700 border border-dark-600 rounded-md text-primary-100 focus:outline-none focus:ring-2 focus:ring-primary-500"
-                >
-                    <option value="SUM">Sum</option>
-                    <option value="MAX">Maximum</option>
-                    <option value="COUNT">Count</option>
-                    <option value="AVERAGE">Average</option>
-                </select>
-            </div>
-
-            {error && (
-                <div className="text-red-400 text-sm">
-                    {error}
+        <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="grid grid-cols-1 gap-6">
+                <div>
+                    <label htmlFor="name" className="block text-sm font-medium text-gray-300">
+                        Goal Name
+                    </label>
+                    <input
+                        type="text"
+                        id="name"
+                        value={formData.name}
+                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                        className="mt-1 block w-full rounded-md bg-dark-700 border-dark-600 text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+                        required
+                    />
                 </div>
-            )}
-
+                <div>
+                    <label htmlFor="category" className="block text-sm font-medium text-gray-300">
+                        Category
+                    </label>
+                    <select
+                        id="category"
+                        value={formData.category}
+                        onChange={(e) => setFormData({ ...formData, category: e.target.value as GoalCategory })}
+                        className="mt-1 block w-full rounded-md bg-dark-700 border-dark-600 text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+                        required
+                    >
+                        <option value="strength">Strength</option>
+                        <option value="cardio">Cardio</option>
+                        <option value="nutrition">Nutrition</option>
+                        <option value="mental">Mental</option>
+                        <option value="habit">Habit</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div>
+                    <label htmlFor="target_value" className="block text-sm font-medium text-gray-300">
+                        Target Value
+                    </label>
+                    <input
+                        type="number"
+                        id="target_value"
+                        value={formData.target_value}
+                        onChange={(e) => setFormData({ ...formData, target_value: Number(e.target.value) })}
+                        className="mt-1 block w-full rounded-md bg-dark-700 border-dark-600 text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+                        required
+                    />
+                </div>
+                <div>
+                    <label htmlFor="unit" className="block text-sm font-medium text-gray-300">
+                        Unit
+                    </label>
+                    <input
+                        type="text"
+                        id="unit"
+                        value={formData.unit}
+                        onChange={(e) => setFormData({ ...formData, unit: e.target.value })}
+                        className="mt-1 block w-full rounded-md bg-dark-700 border-dark-600 text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+                        required
+                    />
+                </div>
+                <div>
+                    <label htmlFor="frequency" className="block text-sm font-medium text-gray-300">
+                        Frequency
+                    </label>
+                    <select
+                        id="frequency"
+                        value={formData.frequency}
+                        onChange={(e) => setFormData({ ...formData, frequency: e.target.value as GoalFrequency })}
+                        className="mt-1 block w-full rounded-md bg-dark-700 border-dark-600 text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+                        required
+                    >
+                        <option value="daily">Daily</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="monthly">Monthly</option>
+                        <option value="one-time">One Time</option>
+                    </select>
+                </div>
+                <div>
+                    <label htmlFor="logic_type" className="block text-sm font-medium text-gray-300">
+                        Progress Type
+                    </label>
+                    <select
+                        id="logic_type"
+                        value={formData.logic_type}
+                        onChange={(e) => setFormData({ ...formData, logic_type: e.target.value as GoalLogicType })}
+                        className="mt-1 block w-full rounded-md bg-dark-700 border-dark-600 text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+                        required
+                    >
+                        <option value="SUM">Sum</option>
+                        <option value="MAX">Maximum</option>
+                        <option value="COUNT">Count</option>
+                        <option value="AVERAGE">Average</option>
+                    </select>
+                </div>
+                <div>
+                    <label htmlFor="deadline" className="block text-sm font-medium text-gray-300">
+                        Deadline (Optional)
+                    </label>
+                    <input
+                        type="date"
+                        id="deadline"
+                        value={formData.deadline || ''}
+                        onChange={(e) => setFormData({ ...formData, deadline: e.target.value })}
+                        className="mt-1 block w-full rounded-md bg-dark-700 border-dark-600 text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+                    />
+                </div>
+            </div>
             <div className="flex justify-end space-x-3">
-                <Button
+                <button
                     type="button"
-                    variant="secondary"
                     onClick={onCancel}
-                    disabled={isLoading}
+                    className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white"
                 >
                     Cancel
-                </Button>
-                <Button
+                </button>
+                <button
                     type="submit"
-                    disabled={isLoading}
+                    className="px-4 py-2 text-sm font-medium text-white bg-primary-500 hover:bg-primary-600 rounded-md"
                 >
                     Create Goal
-                </Button>
+                </button>
             </div>
         </form>
     )

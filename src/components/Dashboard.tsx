@@ -1,43 +1,52 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
-import { useNavigate } from 'react-router-dom'
+import { User } from '@supabase/supabase-js'
+import GoalsList from './goals/GoalsList'
 import AppBar from './AppBar'
 import Text from './atoms/Text'
-import GoalsList from './goals/GoalsList'
-import { User } from '../types/supabase'
 
 export default function Dashboard() {
   const [user, setUser] = useState<User | null>(null)
-  const navigate = useNavigate()
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) {
-        navigate('/signin')
+      const { data: { user }, error } = await supabase.auth.getUser()
+      if (error) {
+        setError('Failed to load user data')
         return
       }
       setUser(user)
     }
     getUser()
-  }, [navigate])
+  }, [])
 
-  if (!user) return null
+  if (error) {
+    return (
+      <div className="min-h-screen bg-dark-900">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="bg-red-500/10 border border-red-500 text-red-500 px-4 py-2 rounded-lg">
+            {error}
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (!user) {
+    return null
+  }
 
   return (
     <div className="min-h-screen bg-dark-900">
-      <AppBar userEmail={user.email} />
-      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <div className="px-4 py-6 sm:px-0">
-          <div className="space-y-8">
-            <div className="border-2 border-dark-800 rounded-lg p-6 bg-dark-800/50 backdrop-blur-sm shadow-neon">
-              <Text variant="accent" size="xl">
-                Welcome to your dashboard!
-              </Text>
-            </div>
-            <GoalsList user={user} />
-          </div>
+      <AppBar userEmail={user.email || ''} />
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="mb-8">
+          <Text variant="accent" size="xl">
+            Welcome back, {user.email}
+          </Text>
         </div>
+        <GoalsList user={user} />
       </main>
     </div>
   )

@@ -1,14 +1,8 @@
 import { useState } from 'react'
 import { supabase } from '../../lib/supabase'
 import Text from '../atoms/Text'
-import { Goal, User } from '../../types/supabase'
+import { GoalCardProps } from '../../types/components'
 import EditGoalForm from './EditGoalForm'
-
-interface GoalCardProps {
-  goal: Goal
-  onUpdate: () => void
-  user: User
-}
 
 export default function GoalCard({ goal, onUpdate, user }: GoalCardProps) {
   const [isEditing, setIsEditing] = useState(false)

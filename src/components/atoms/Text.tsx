@@ -1,43 +1,23 @@
-import { cn } from '../../lib/utils'
+import { TextProps } from '../../types/components'
 
-interface TextProps extends React.HTMLAttributes<HTMLParagraphElement> {
-  variant?: 'default' | 'muted' | 'heading' | 'accent' | 'error'
-  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
-}
-
-export default function Text({ 
-  variant = 'default', 
-  size = 'md',
-  className,
-  ...props 
-}: TextProps) {
-  const baseStyles = 'font-medium'
-  
-  const variants = {
-    default: 'text-primary-100',
-    muted: 'text-primary-400',
-    heading: 'text-primary-200 font-bold tracking-tight',
+export default function Text({ variant = 'default', size = 'base', className = '', children }: TextProps) {
+  const variantClasses = {
     accent: 'text-primary-400',
-    error: 'text-red-400'
+    muted: 'text-gray-400',
+    default: 'text-gray-300',
+    heading: 'text-white font-semibold'
   }
 
-  const sizes = {
-    xs: 'text-xs',
+  const sizeClasses = {
     sm: 'text-sm',
-    md: 'text-base',
+    base: 'text-base',
     lg: 'text-lg',
     xl: 'text-xl'
   }
 
   return (
-    <p 
-      className={cn(
-        baseStyles,
-        variants[variant],
-        sizes[size],
-        className
-      )}
-      {...props}
-    />
+    <span className={`${variantClasses[variant]} ${sizeClasses[size]} ${className}`}>
+      {children}
+    </span>
   )
 } 
