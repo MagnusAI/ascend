@@ -3,6 +3,7 @@ import { supabase } from '../lib/supabase'
 import { useNavigate } from 'react-router-dom'
 import AppBar from './AppBar'
 import Text from './atoms/Text'
+import GoalsList from './goals/GoalsList'
 
 export default function Dashboard() {
   const [user, setUser] = useState<any>(null)
@@ -27,10 +28,13 @@ export default function Dashboard() {
       <AppBar userEmail={user.email} />
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="px-4 py-6 sm:px-0">
-          <div className="border-2 border-dark-800 rounded-lg h-96 flex items-center justify-center bg-dark-800/50 backdrop-blur-sm shadow-neon">
-            <Text variant="accent" size="xl">
-              Welcome to your dashboard!
-            </Text>
+          <div className="space-y-8">
+            <div className="border-2 border-dark-800 rounded-lg p-6 bg-dark-800/50 backdrop-blur-sm shadow-neon">
+              <Text variant="accent" size="xl">
+                Welcome to your dashboard!
+              </Text>
+            </div>
+            <GoalsList />
           </div>
         </div>
       </main>
