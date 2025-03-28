@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Menu, X, LogOut, User } from 'lucide-react'
+import { Menu, X, LogOut, User, LayoutDashboard } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { useNavigate } from 'react-router-dom'
 import Text from './atoms/Text'
@@ -33,8 +33,15 @@ export default function AppBar() {
                     <div className="hidden md:block">
                         <div className="ml-4 flex items-center md:ml-6">
                             <button
+                                onClick={() => navigate('/dashboard')}
+                                className="flex gap-2 p-2 rounded-md text-primary-400 hover:text-primary-300 hover:bg-dark-800 focus:outline-none focus:ring-2 focus:ring-primary-500 mr-2"
+                            >
+                                <LayoutDashboard className="h-6 w-6" />
+                                Dashboard
+                            </button>
+                            <button
                                 onClick={() => navigate('/profile')}
-                                className="flex  gap-2 p-2 rounded-md text-primary-400 hover:text-primary-300 hover:bg-dark-800 focus:outline-none focus:ring-2 focus:ring-primary-500 mr-2"
+                                className="flex gap-2 p-2 rounded-md text-primary-400 hover:text-primary-300 hover:bg-dark-800 focus:outline-none focus:ring-2 focus:ring-primary-500 mr-2"
                             >
                                 <User className="h-6 w-6" />
                                 Profile
@@ -69,6 +76,16 @@ export default function AppBar() {
             {isMenuOpen && (
                 <div className="md:hidden border-t border-dark-800">
                     <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                        <button
+                            onClick={() => {
+                                navigate('/dashboard')
+                                setIsMenuOpen(false)
+                            }}
+                            className="w-full flex items-center px-3 py-2 text-primary-400 hover:text-primary-300 hover:bg-dark-800 rounded-md"
+                        >
+                            <LayoutDashboard className="h-5 w-5 mr-2" />
+                            Dashboard
+                        </button>
                         <button
                             onClick={() => {
                                 navigate('/profile')
