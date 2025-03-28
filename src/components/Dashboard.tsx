@@ -4,9 +4,10 @@ import { useNavigate } from 'react-router-dom'
 import AppBar from './AppBar'
 import Text from './atoms/Text'
 import GoalsList from './goals/GoalsList'
+import { User } from '../types/supabase'
 
 export default function Dashboard() {
-  const [user, setUser] = useState<any>(null)
+  const [user, setUser] = useState<User | null>(null)
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -34,7 +35,7 @@ export default function Dashboard() {
                 Welcome to your dashboard!
               </Text>
             </div>
-            <GoalsList />
+            <GoalsList user={user} />
           </div>
         </div>
       </main>

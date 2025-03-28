@@ -96,7 +96,6 @@ npm run supabase:db:reset
    - Go to your repository settings
    - Navigate to Secrets and Variables > Actions
    - Add the following secrets:
-     - `SUPABASE_ACCESS_TOKEN`: Your Supabase access token (from Supabase dashboard > Account > Access Tokens)
      - `SUPABASE_DB_PASSWORD`: Your database password (from Supabase dashboard > Project Settings > Database)
      - `SUPABASE_PROJECT_REF`: Your project reference ID (from Supabase dashboard > Project Settings > General)
 

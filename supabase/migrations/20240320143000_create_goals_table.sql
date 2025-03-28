@@ -4,6 +4,7 @@ create table if not exists public.goals (
     user_id uuid references auth.users(id) on delete cascade not null,
     title text not null,
     description text,
+    category text not null default 'other',
     status text not null default 'in_progress',
     due_date timestamp with time zone,
     created_at timestamp with time zone default now(),

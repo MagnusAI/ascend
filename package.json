@@ -8,14 +8,9 @@
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "supabase:start": "supabase start",
-    "supabase:stop": "supabase stop",
-    "supabase:db:reset": "supabase db reset",
-    "supabase:db:push": "supabase db push",
-    "supabase:db:pull": "supabase db pull",
-    "supabase:link": "supabase link --project-ref your-project-ref",
-    "supabase:db:push:prod": "supabase db push --db-url postgres://postgres:[YOUR-PASSWORD]@db.[YOUR-PROJECT-REF].supabase.co:5432/postgres",
-    "db:push": "echo $SUPABASE_DB_PASSWORD | npx supabase db push"
+    "db:login": "supabase login",
+    "db:link": "supabase link",
+    "db:push": "supabase db push"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.39.3",
