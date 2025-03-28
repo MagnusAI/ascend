@@ -24,11 +24,14 @@ export default function AppBar({ userEmail }: AppBarProps) {
                 <div className="flex items-center justify-between h-16">
                     {/* Logo and title */}
                     <div className="flex items-center">
-                        <div className="flex-shrink-0">
+                        <button
+                            onClick={() => navigate('/')}
+                            className="flex-shrink-0 hover:text-primary-300 transition-colors"
+                        >
                             <Text variant="accent" size="xl">
                                 Ascend
                             </Text>
-                        </div>
+                        </button>
                     </div>
 
                     {/* Desktop menu */}
