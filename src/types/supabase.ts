@@ -14,4 +14,15 @@ export interface Goal {
   unit: string
   created_at: string
   updated_at: string
+}
+
+export interface ProgressLog {
+  id: string
+  goal_id: string
+  user_id: string
+  value: number
+  notes: string | null
+  timestamp: string
+  created_at: string
+  updated_at: string
 } 

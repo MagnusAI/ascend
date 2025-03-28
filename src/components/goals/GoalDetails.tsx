@@ -2,10 +2,11 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
 import { User } from '@supabase/supabase-js'
-import { Goal } from '../../types/supabase'
+import { Goal, ProgressLog } from '../../types/supabase'
 import AppBar from '../AppBar'
 import Text from '../atoms/Text'
 import EditGoalForm from './EditGoalForm'
+import ProgressLogForm from './ProgressLogForm'
 
 interface GoalDetailsProps {
   user: User
@@ -15,7 +16,9 @@ export default function GoalDetails({ user }: GoalDetailsProps) {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const [goal, setGoal] = useState<Goal | null>(null)
+  const [progressLogs, setProgressLogs] = useState<ProgressLog[]>([])
   const [isEditing, setIsEditing] = useState(false)
+  const [isAddingLog, setIsAddingLog] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
@@ -37,7 +40,25 @@ export default function GoalDetails({ user }: GoalDetailsProps) {
       setGoal(data)
     }
 
+    const fetchProgressLogs = async () => {
+      if (!id) return
+
+      const { data, error } = await supabase
+        .from('progress_logs')
+        .select('*')
+        .eq('goal_id', id)
+        .order('timestamp', { ascending: false })
+
+      if (error) {
+        setError('Failed to load progress logs')
+        return
+      }
+
+      setProgressLogs(data || [])
+    }
+
     fetchGoal()
+    fetchProgressLogs()
   }, [id, user.id])
 
   const handleDelete = async () => {
@@ -55,6 +76,20 @@ export default function GoalDetails({ user }: GoalDetailsProps) {
     } catch (error) {
       console.error('Error deleting goal:', error)
       setError('Failed to delete goal')
+    }
+  }
+
+  const handleLogSuccess = async () => {
+    setIsAddingLog(false)
+    // Refresh progress logs
+    const { data, error } = await supabase
+      .from('progress_logs')
+      .select('*')
+      .eq('goal_id', id)
+      .order('timestamp', { ascending: false })
+
+    if (!error && data) {
+      setProgressLogs(data)
     }
   }
 
@@ -159,6 +194,68 @@ export default function GoalDetails({ user }: GoalDetailsProps) {
                     {goal.due_date ? new Date(goal.due_date).toLocaleDateString() : 'No due date'}
                   </Text>
                 </div>
+              </div>
+            </div>
+
+            <div>
+              <div className="flex justify-between items-center mb-4">
+                <Text variant="accent" size="lg">Progress Logs</Text>
+                <button
+                  onClick={() => setIsAddingLog(true)}
+                  className="px-4 py-2 text-sm font-medium text-white bg-primary-500 hover:bg-primary-600 rounded-md"
+                >
+                  Add Log
+                </button>
+              </div>
+
+              {isAddingLog && (
+                <div className="fixed inset-0 z-50 overflow-y-auto">
+                  <div className="flex min-h-full items-center justify-center p-4 text-center">
+                    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setIsAddingLog(false)} />
+                    <div className="relative transform overflow-hidden rounded-lg bg-dark-800 p-6 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-2xl">
+                      <div className="absolute right-0 top-0 pr-4 pt-4">
+                        <button
+                          type="button"
+                          onClick={() => setIsAddingLog(false)}
+                          className="rounded-md text-gray-400 hover:text-gray-300 focus:outline-none"
+                        >
+                          <span className="sr-only">Close</span>
+                          <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
+                      </div>
+                      <ProgressLogForm
+                        goal={goal}
+                        user={user}
+                        onSuccess={handleLogSuccess}
+                        onCancel={() => setIsAddingLog(false)}
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <div className="bg-dark-800 rounded-lg p-6">
+                {progressLogs.length === 0 ? (
+                  <Text variant="muted">No progress logs yet</Text>
+                ) : (
+                  <div className="space-y-4">
+                    {progressLogs.map((log) => (
+                      <div key={log.id} className="flex justify-between items-center py-2 border-b border-dark-700 last:border-0">
+                        <div>
+                          <Text variant="default" size="base">{log.value} {goal.unit}</Text>
+                          <Text variant="muted" size="sm">
+                            {new Date(log.timestamp).toLocaleString()}
+                          </Text>
+                        </div>
+                        {log.notes && (
+                          <Text variant="muted" size="sm">{log.notes}</Text>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           </div>
