@@ -3,22 +3,27 @@ import SignIn from './components/auth/SignIn'
 import SignUp from './components/auth/SignUp'
 import Dashboard from './components/Dashboard'
 import Profile from './components/Profile'
+import GoalDetails from './components/goals/GoalDetails'
 import { useEffect, useState } from 'react'
 import { supabase } from './lib/supabase'
+import { User } from '@supabase/supabase-js'
 import './App.css'
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null)
+  const [user, setUser] = useState<User | null>(null)
 
   useEffect(() => {
     const checkAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession()
       setIsAuthenticated(!!session)
+      setUser(session?.user ?? null)
     }
     checkAuth()
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setIsAuthenticated(!!session)
+      setUser(session?.user ?? null)
     })
 
     return () => subscription.unsubscribe()
@@ -35,6 +40,16 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/profile" element={<Profile />} />
+        <Route 
+          path="/goals/:id" 
+          element={
+            user ? (
+              <GoalDetails user={user} />
+            ) : (
+              <Navigate to="/dashboard" replace />
+            )
+          } 
+        />
         <Route 
           path="/" 
           element={

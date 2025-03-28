@@ -11,8 +11,6 @@ export interface TextProps {
 
 export interface GoalCardProps {
   goal: Goal
-  onUpdate: () => void
-  user: User
 }
 
 export interface GoalFormProps {
