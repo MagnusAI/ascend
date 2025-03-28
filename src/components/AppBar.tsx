@@ -10,7 +10,7 @@ interface AppBarProps {
 }
 
 export default function AppBar({ userEmail }: AppBarProps) {
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+    const [isMenuOpen, setIsMenuOpen] = useState(false)
     const navigate = useNavigate()
 
     const handleSignOut = async () => {
@@ -19,59 +19,63 @@ export default function AppBar({ userEmail }: AppBarProps) {
     }
 
     return (
-        <nav className="bg-dark-800 shadow-sm">
+        <nav className="bg-dark-900 border-b border-dark-800 shadow-neon">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex justify-between h-16">
+                <div className="flex items-center justify-between h-16">
                     {/* Logo and title */}
                     <div className="flex items-center">
-                        <Text variant="heading" size="xl">Ascend</Text>
+                        <div className="flex-shrink-0">
+                            <Text variant="accent" size="xl">
+                                Ascend
+                            </Text>
+                        </div>
                     </div>
 
                     {/* Desktop menu */}
-                    <div className="hidden sm:flex sm:items-center sm:space-x-4">
-                        <Text variant="muted">{userEmail}</Text>
-                        <Button
-                            variant="destructive"
-                            onClick={handleSignOut}
-                            className="inline-flex items-center"
-                        >
-                            <LogOut className="h-4 w-4 mr-2" />
-                            Sign Out
-                        </Button>
+                    <div className="hidden md:block">
+                        <div className="ml-4 flex items-center md:ml-6">
+                            <Text variant="muted" className="mr-4">
+                                {userEmail}
+                            </Text>
+                            <button
+                                onClick={handleSignOut}
+                                className="p-2 rounded-md text-primary-400 hover:text-primary-300 hover:bg-dark-800 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                            >
+                                <LogOut className="h-6 w-6" />
+                            </button>
+                        </div>
                     </div>
 
                     {/* Mobile menu button */}
-                    <div className="flex items-center sm:hidden">
-                        <Button
-                            variant="ghost"
-                            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                            className="p-2"
+                    <div className="md:hidden">
+                        <button
+                            onClick={() => setIsMenuOpen(!isMenuOpen)}
+                            className="p-2 rounded-md text-primary-400 hover:text-primary-300 hover:bg-dark-800 focus:outline-none focus:ring-2 focus:ring-primary-500"
                         >
-                            {isMobileMenuOpen ? (
-                                <X className="block h-6 w-6" />
+                            {isMenuOpen ? (
+                                <X className="h-6 w-6" />
                             ) : (
-                                <Menu className="block h-6 w-6" />
+                                <Menu className="h-6 w-6" />
                             )}
-                        </Button>
+                        </button>
                     </div>
                 </div>
             </div>
 
             {/* Mobile menu */}
-            {isMobileMenuOpen && (
-                <div className="sm:hidden flex flex-col">
-                    <div className="pt-2 pb-3 space-y-1 place-items-center">
-                        <div className="px-4 py-2">
-                            <Text variant="muted">{userEmail}</Text>
-                        </div>
-                        <Button
-                            variant="destructive"
+            {isMenuOpen && (
+                <div className="md:hidden border-t border-dark-800">
+                    <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                        <Text variant="muted" className="block px-3 py-2">
+                            {userEmail}
+                        </Text>
+                        <button
                             onClick={handleSignOut}
-                            className="w-full flex items-center px-4 py-2 max-w-36"
+                            className="w-full flex items-center px-3 py-2 text-primary-400 hover:text-primary-300 hover:bg-dark-800 rounded-md"
                         >
-                            <LogOut className="h-4 w-4 mr-2" />
-                            Sign Out
-                        </Button>
+                            <LogOut className="h-5 w-5 mr-2" />
+                            Sign out
+                        </button>
                     </div>
                 </div>
             )}

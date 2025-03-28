@@ -23,12 +23,14 @@ export default function Dashboard() {
   if (!user) return null
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-dark-900">
       <AppBar userEmail={user.email} />
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="px-4 py-6 sm:px-0">
-          <div className="border-4 border-dashed border-gray-200 rounded-lg h-96 flex items-center justify-center">
-            <Text variant="muted" size="xl">Welcome to your dashboard!</Text>
+          <div className="border-2 border-dark-800 rounded-lg h-96 flex items-center justify-center bg-dark-800/50 backdrop-blur-sm shadow-neon">
+            <Text variant="accent" size="xl">
+              Welcome to your dashboard!
+            </Text>
           </div>
         </div>
       </main>
