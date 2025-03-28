@@ -148,8 +148,10 @@ export default function GoalDetails({ user }: GoalDetailsProps) {
                   <Text variant="default" size="base">{goal.status}</Text>
                 </div>
                 <div className="flex flex-col gap-2">
-                  <Text variant="muted" size="sm">Target Value</Text>
-                  <Text variant="default" size="base">{goal.target_value} {goal.unit}</Text>
+                  <Text variant="muted" size="sm">Target</Text>
+                  <Text variant="default" size="base">
+                    {goal.target_type === 'above' ? '≥' : '≤'} {goal.target_value} {goal.unit}
+                  </Text>
                 </div>
                 <div className="flex flex-col gap-2">
                   <Text variant="muted" size="sm">Due Date</Text>

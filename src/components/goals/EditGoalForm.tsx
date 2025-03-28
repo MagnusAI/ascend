@@ -3,12 +3,15 @@ import { supabase } from '../../lib/supabase'
 import Text from '../atoms/Text'
 import { EditGoalFormProps } from '../../types/components'
 
+type TargetType = 'above' | 'below'
+
 export default function EditGoalForm({ goal, onSuccess, onCancel, user }: EditGoalFormProps) {
   const [formData, setFormData] = useState({
     name: goal.name,
     category: goal.category,
     status: goal.status,
     target_value: goal.target_value,
+    target_type: goal.target_type as TargetType,
     unit: goal.unit,
     due_date: goal.due_date || ''
   })
@@ -26,6 +29,7 @@ export default function EditGoalForm({ goal, onSuccess, onCancel, user }: EditGo
           category: formData.category,
           status: formData.status,
           target_value: formData.target_value,
+          target_type: formData.target_type,
           unit: formData.unit,
           due_date: formData.due_date || null
         })
@@ -107,6 +111,21 @@ export default function EditGoalForm({ goal, onSuccess, onCancel, user }: EditGo
             className="mt-1 block w-full rounded-md bg-dark-700 border-dark-600 text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
             required
           />
+        </div>
+        <div>
+          <label htmlFor="target_type" className="block text-sm font-medium text-gray-300">
+            Target Type
+          </label>
+          <select
+            id="target_type"
+            value={formData.target_type}
+            onChange={(e) => setFormData({ ...formData, target_type: e.target.value as TargetType })}
+            className="mt-1 block w-full rounded-md bg-dark-700 border-dark-600 text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+            required
+          >
+            <option value="above">Above target (e.g., lift more than 100kg)</option>
+            <option value="below">Below target (e.g., run faster than 22 minutes)</option>
+          </select>
         </div>
         <div>
           <label htmlFor="unit" className="block text-sm font-medium text-gray-300">

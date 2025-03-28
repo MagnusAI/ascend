@@ -2,11 +2,14 @@ import { useState } from 'react'
 import { supabase } from '../../lib/supabase'
 import { GoalFormProps } from '../../types/components'
 
+type TargetType = 'above' | 'below'
+
 export default function GoalForm({ onSuccess, onCancel, user }: GoalFormProps) {
   const [formData, setFormData] = useState({
     name: '',
     category: '',
     target_value: 0,
+    target_type: 'above' as TargetType,
     unit: '',
     due_date: ''
   })
@@ -26,6 +29,7 @@ export default function GoalForm({ onSuccess, onCancel, user }: GoalFormProps) {
             name: formData.name,
             category: formData.category,
             target_value: formData.target_value,
+            target_type: formData.target_type,
             unit: formData.unit,
             due_date: formData.due_date || null,
             status: 'In Progress'
@@ -86,6 +90,21 @@ export default function GoalForm({ onSuccess, onCancel, user }: GoalFormProps) {
             className="mt-1 block w-full rounded-md bg-dark-700 border-dark-600 text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
             required
           />
+        </div>
+        <div>
+          <label htmlFor="target_type" className="block text-sm font-medium text-gray-300">
+            Target Type
+          </label>
+          <select
+            id="target_type"
+            value={formData.target_type}
+            onChange={(e) => setFormData({ ...formData, target_type: e.target.value as TargetType })}
+            className="mt-1 block w-full rounded-md bg-dark-700 border-dark-600 text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm"
+            required
+          >
+            <option value="above">Above target (e.g., lift more than 100kg)</option>
+            <option value="below">Below target (e.g., run faster than 22 minutes)</option>
+          </select>
         </div>
         <div>
           <label htmlFor="unit" className="block text-sm font-medium text-gray-300">
