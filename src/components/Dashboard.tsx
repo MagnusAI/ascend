@@ -39,11 +39,11 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-dark-900">
-      <AppBar userEmail={user.email || ''} />
+      <AppBar />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="mb-8">
           <Text variant="accent" size="xl">
-            Welcome back, {user.email}
+            Welcome back!
           </Text>
         </div>
         <GoalsList user={user} />
