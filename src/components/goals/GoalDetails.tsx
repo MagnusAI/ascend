@@ -7,6 +7,7 @@ import AppBar from '../AppBar'
 import Text from '../atoms/Text'
 import EditGoalForm from './EditGoalForm'
 import ProgressLogForm from './ProgressLogForm'
+import { Trash2 } from 'lucide-react'
 
 interface GoalDetailsProps {
   user: User
@@ -20,6 +21,7 @@ export default function GoalDetails({ user }: GoalDetailsProps) {
   const [isEditing, setIsEditing] = useState(false)
   const [isAddingLog, setIsAddingLog] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [logToDelete, setLogToDelete] = useState<ProgressLog | null>(null)
 
   useEffect(() => {
     const fetchGoal = async () => {
@@ -90,6 +92,33 @@ export default function GoalDetails({ user }: GoalDetailsProps) {
 
     if (!error && data) {
       setProgressLogs(data)
+    }
+  }
+
+  const handleDeleteLog = async (logId: string) => {
+    try {
+      const { error } = await supabase
+        .from('progress_logs')
+        .delete()
+        .eq('id', logId)
+        .eq('user_id', user.id)
+
+      if (error) throw error
+
+      // Refresh progress logs
+      const { data, error: fetchError } = await supabase
+        .from('progress_logs')
+        .select('*')
+        .eq('goal_id', id)
+        .order('timestamp', { ascending: false })
+
+      if (!fetchError && data) {
+        setProgressLogs(data)
+      }
+      setLogToDelete(null) // Close the confirmation dialog
+    } catch (error) {
+      console.error('Error deleting progress log:', error)
+      setError('Failed to delete progress log')
     }
   }
 
@@ -248,15 +277,59 @@ export default function GoalDetails({ user }: GoalDetailsProps) {
                           <Text variant="muted" size="sm">
                             {new Date(log.timestamp).toLocaleString()}
                           </Text>
+                          {log.notes && (
+                            <Text variant="muted" size="sm" className="mt-1">
+                              {log.notes}
+                            </Text>
+                          )}
                         </div>
-                        {log.notes && (
-                          <Text variant="muted" size="sm">{log.notes}</Text>
-                        )}
+                        <button
+                          onClick={() => setLogToDelete(log)}
+                          className="p-2 text-red-400 hover:text-red-300 hover:bg-dark-700 rounded-md transition-colors"
+                          title="Delete log"
+                        >
+                          <Trash2 className="h-5 w-5" />
+                        </button>
                       </div>
                     ))}
                   </div>
                 )}
               </div>
+
+              {/* Delete Confirmation Dialog */}
+              {logToDelete && (
+                <div className="fixed inset-0 z-50 overflow-y-auto">
+                  <div className="flex min-h-full items-center justify-center p-4 text-center">
+                    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setLogToDelete(null)} />
+                    <div className="relative transform overflow-hidden rounded-lg bg-dark-800 p-6 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                      <div className="sm:flex sm:items-start">
+                        <div className="mt-3 text-center sm:mt-0 sm:text-left">
+                          <Text variant="accent" size="lg" className="mb-2">Delete Progress Log</Text>
+                          <Text variant="default" size="base" className="mb-4">
+                            Are you sure you want to delete this progress log? This action cannot be undone.
+                          </Text>
+                          <div className="mt-4 flex justify-end space-x-3">
+                            <button
+                              type="button"
+                              onClick={() => setLogToDelete(null)}
+                              className="px-4 py-2 text-sm font-medium text-primary-400 hover:text-primary-300"
+                            >
+                              Cancel
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteLog(logToDelete.id)}
+                              className="px-4 py-2 text-sm font-medium text-white bg-red-500 hover:bg-red-600 rounded-md"
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}
