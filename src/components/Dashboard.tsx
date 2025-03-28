@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
 import { useNavigate } from 'react-router-dom'
-import Button from './atoms/Button'
+import AppBar from './AppBar'
+import Text from './atoms/Text'
 
 export default function Dashboard() {
   const [user, setUser] = useState<any>(null)
@@ -19,41 +20,15 @@ export default function Dashboard() {
     getUser()
   }, [navigate])
 
-  const handleSignOut = async () => {
-    await supabase.auth.signOut()
-    navigate('/signin')
-  }
-
   if (!user) return null
 
   return (
-    <div className="min-h-screen bg-dark-900">
-      <nav className="bg-dark-800 border-b border-dark-700">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex items-center">
-              <h1 className="text-xl font-semibold text-white">Ascend</h1>
-            </div>
-            <div className="flex items-center space-x-4">
-              <span className="text-dark-300">{user.email}</span>
-              <Button
-                variant="secondary"
-                onClick={handleSignOut}
-              >
-                Sign Out
-              </Button>
-            </div>
-          </div>
-        </div>
-      </nav>
-
+    <div className="min-h-screen">
+      <AppBar userEmail={user.email} />
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="px-4 py-6 sm:px-0">
-          <div className="card animate-slide-up">
-            <h2 className="text-2xl font-bold text-white mb-4">Welcome to your dashboard!</h2>
-            <p className="text-dark-300">
-              Start tracking your goals and monitor your progress.
-            </p>
+          <div className="border-4 border-dashed border-gray-200 rounded-lg h-96 flex items-center justify-center">
+            <Text variant="muted" size="xl">Welcome to your dashboard!</Text>
           </div>
         </div>
       </main>
