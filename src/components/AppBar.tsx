@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Menu, X, LogOut } from 'lucide-react'
+import { Menu, X, LogOut, User } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { useNavigate } from 'react-router-dom'
 import Button from './atoms/Button'
@@ -34,9 +34,12 @@ export default function AppBar({ userEmail }: AppBarProps) {
                     {/* Desktop menu */}
                     <div className="hidden md:block">
                         <div className="ml-4 flex items-center md:ml-6">
-                            <Text variant="muted" className="mr-4">
-                                {userEmail}
-                            </Text>
+                            <button
+                                onClick={() => navigate('/profile')}
+                                className="p-2 rounded-md text-primary-400 hover:text-primary-300 hover:bg-dark-800 focus:outline-none focus:ring-2 focus:ring-primary-500 mr-2"
+                            >
+                                <User className="h-6 w-6" />
+                            </button>
                             <button
                                 onClick={handleSignOut}
                                 className="p-2 rounded-md text-primary-400 hover:text-primary-300 hover:bg-dark-800 focus:outline-none focus:ring-2 focus:ring-primary-500"
@@ -66,9 +69,16 @@ export default function AppBar({ userEmail }: AppBarProps) {
             {isMenuOpen && (
                 <div className="md:hidden border-t border-dark-800">
                     <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                        <Text variant="muted" className="block px-3 py-2">
-                            {userEmail}
-                        </Text>
+                        <button
+                            onClick={() => {
+                                navigate('/profile')
+                                setIsMenuOpen(false)
+                            }}
+                            className="w-full flex items-center px-3 py-2 text-primary-400 hover:text-primary-300 hover:bg-dark-800 rounded-md"
+                        >
+                            <User className="h-5 w-5 mr-2" />
+                            Profile
+                        </button>
                         <button
                             onClick={handleSignOut}
                             className="w-full flex items-center px-3 py-2 text-primary-400 hover:text-primary-300 hover:bg-dark-800 rounded-md"
