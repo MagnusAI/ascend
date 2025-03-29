@@ -4,6 +4,7 @@ import SignUp from './components/auth/SignUp'
 import Dashboard from './components/Dashboard'
 import Profile from './components/Profile'
 import GoalDetails from './components/goals/GoalDetails'
+import CreateGoal from './components/goals/CreateGoal'
 import { useEffect, useState } from 'react'
 import { supabase } from './lib/supabase'
 import { User } from '@supabase/supabase-js'
@@ -40,6 +41,16 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/profile" element={<Profile />} />
+        <Route 
+          path="/goals/new" 
+          element={
+            user ? (
+              <CreateGoal />
+            ) : (
+              <Navigate to="/dashboard" replace />
+            )
+          } 
+        />
         <Route 
           path="/goals/:id" 
           element={

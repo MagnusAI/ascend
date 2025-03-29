@@ -7,7 +7,6 @@ import {
   FormGroup,
   FormLabel,
   FormInput,
-  FormTextarea,
   FormError,
   FormActions,
 } from '../atoms/Form'
@@ -20,31 +19,35 @@ interface GoalFormProps {
   initialData?: Partial<Omit<Goal, 'notes'>> & { notes?: string }
 }
 
-type TargetType = 'above' | 'below'
-
 export function GoalForm({ user, onSuccess, onCancel, initialData }: GoalFormProps) {
   const [formData, setFormData] = useState({
     name: initialData?.name || '',
     category: initialData?.category || '',
-    status: initialData?.status || 'in_progress',
     target_value: initialData?.target_value || 0,
-    target_type: (initialData?.target_type as TargetType) || 'above',
+    target_type: (initialData?.target_type as 'above' | 'below') || 'above',
     unit: initialData?.unit || '',
     due_date: initialData?.due_date || '',
     notes: initialData?.notes || '',
   })
   const [error, setError] = useState<string | null>(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)
+    setIsSubmitting(true)
 
     try {
       const { error } = await supabase
         .from('goals')
         .insert({
-          ...formData,
           user_id: user.id,
+          name: formData.name,
+          category: formData.category,
+          target_value: formData.target_value,
+          target_type: formData.target_type,
+          unit: formData.unit,
+          due_date: formData.due_date || null
         })
 
       if (error) throw error
@@ -52,17 +55,18 @@ export function GoalForm({ user, onSuccess, onCancel, initialData }: GoalFormPro
     } catch (error) {
       console.error('Error creating goal:', error)
       setError('Failed to create goal')
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
   return (
     <Form onSubmit={handleSubmit}>
-      {error && <FormError>{error}</FormError>}
-
       <FormGroup>
-        <FormLabel htmlFor="name">Name</FormLabel>
+        <FormLabel htmlFor="name">Goal Name</FormLabel>
         <FormInput
           id="name"
+          type="text"
           value={formData.name}
           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
           required
@@ -73,25 +77,11 @@ export function GoalForm({ user, onSuccess, onCancel, initialData }: GoalFormPro
         <FormLabel htmlFor="category">Category</FormLabel>
         <FormInput
           id="category"
+          type="text"
           value={formData.category}
           onChange={(e) => setFormData({ ...formData, category: e.target.value })}
           required
         />
-      </FormGroup>
-
-      <FormGroup>
-        <FormLabel htmlFor="status">Status</FormLabel>
-        <select
-          id="status"
-          value={formData.status}
-          onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-          className="w-full px-3 py-2 bg-dark-700 border border-dark-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
-          required
-        >
-          <option value="in_progress">In Progress</option>
-          <option value="completed">Completed</option>
-          <option value="abandoned">Abandoned</option>
-        </select>
       </FormGroup>
 
       <FormGroup>
@@ -100,8 +90,9 @@ export function GoalForm({ user, onSuccess, onCancel, initialData }: GoalFormPro
           id="target_value"
           type="number"
           value={formData.target_value}
-          onChange={(e) => setFormData({ ...formData, target_value: parseFloat(e.target.value) })}
+          onChange={(e) => setFormData({ ...formData, target_value: Number(e.target.value) })}
           required
+          min="0"
           step="any"
         />
       </FormGroup>
@@ -111,7 +102,7 @@ export function GoalForm({ user, onSuccess, onCancel, initialData }: GoalFormPro
         <select
           id="target_type"
           value={formData.target_type}
-          onChange={(e) => setFormData({ ...formData, target_type: e.target.value as TargetType })}
+          onChange={(e) => setFormData({ ...formData, target_type: e.target.value as 'above' | 'below' })}
           className="w-full px-3 py-2 bg-dark-700 border border-dark-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
           required
         >
@@ -124,6 +115,7 @@ export function GoalForm({ user, onSuccess, onCancel, initialData }: GoalFormPro
         <FormLabel htmlFor="unit">Unit</FormLabel>
         <FormInput
           id="unit"
+          type="text"
           value={formData.unit}
           onChange={(e) => setFormData({ ...formData, unit: e.target.value })}
           required
@@ -131,7 +123,7 @@ export function GoalForm({ user, onSuccess, onCancel, initialData }: GoalFormPro
       </FormGroup>
 
       <FormGroup>
-        <FormLabel htmlFor="due_date">Due Date</FormLabel>
+        <FormLabel htmlFor="due_date">Due Date (Optional)</FormLabel>
         <FormInput
           id="due_date"
           type="date"
@@ -140,21 +132,13 @@ export function GoalForm({ user, onSuccess, onCancel, initialData }: GoalFormPro
         />
       </FormGroup>
 
-      <FormGroup>
-        <FormLabel htmlFor="notes">Notes (optional)</FormLabel>
-        <FormTextarea
-          id="notes"
-          value={formData.notes}
-          onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-          rows={3}
-        />
-      </FormGroup>
+      {error && <FormError>{error}</FormError>}
 
       <FormActions>
         <Button type="button" variant="ghost" onClick={onCancel}>
           Cancel
         </Button>
-        <Button type="submit">
+        <Button type="submit" isLoading={isSubmitting}>
           {initialData ? 'Update Goal' : 'Create Goal'}
         </Button>
       </FormActions>
