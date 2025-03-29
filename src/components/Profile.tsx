@@ -3,7 +3,7 @@ import { supabase } from '../lib/supabase'
 import { useNavigate } from 'react-router-dom'
 import AppBar from './AppBar'
 import Text from './atoms/Text'
-import Button from './atoms/Button'
+import { Button } from './atoms/Button'
 
 export default function Profile() {
   const [email, setEmail] = useState('')
@@ -194,9 +194,8 @@ export default function Profile() {
 
             {/* Status Messages */}
             {message && (
-              <div className={`p-4 rounded-md ${
-                message.type === 'success' ? 'bg-green-900/50 text-green-400' : 'bg-red-900/50 text-red-400'
-              }`}>
+              <div className={`p-4 rounded-md ${message.type === 'success' ? 'bg-green-900/50 text-green-400' : 'bg-red-900/50 text-red-400'
+                }`}>
                 {message.text}
               </div>
             )}

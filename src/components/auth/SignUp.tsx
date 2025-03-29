@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { supabase } from '../../lib/supabase'
 import { useNavigate, Link } from 'react-router-dom'
-import Button from '../atoms/Button'
+import { Button } from '../atoms/Button'
 import Input from '../atoms/Input'
 import Form from '../molecules/Form'
 
@@ -16,7 +16,7 @@ export default function SignUp() {
     e.preventDefault()
     setIsLoading(true)
     setError(null)
-    
+
     try {
       const { error } = await supabase.auth.signUp({
         email,
