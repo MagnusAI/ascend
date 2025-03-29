@@ -26,7 +26,7 @@ export function CategorySpiderCharts({ goals, progressLogs }: CategorySpiderChar
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       {categories.map(category => (
-        <div>
+        <div key={category}>
           <h3 className="text-primary-400 text-lg font-bold">{category}</h3>
           <SpiderChart
             goals={goals}

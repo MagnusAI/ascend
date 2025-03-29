@@ -9,6 +9,8 @@ import EditGoalForm from './EditGoalForm'
 import ProgressLogForm from './ProgressLogForm'
 import EditProgressLogForm from './EditProgressLogForm'
 import { Trash2, Pencil } from 'lucide-react'
+import { Card, CardContent } from '../atoms/Card'
+import { ProgressLineChart } from '../molecules/ProgressLineChart'
 
 interface GoalDetailsProps {
   user: User
@@ -241,6 +243,15 @@ export default function GoalDetails({ user }: GoalDetailsProps) {
                 </div>
               </div>
             </div>
+
+            <Card>
+              <CardContent className="pt-6">
+                <ProgressLineChart
+                  goal={goal}
+                  progressLogs={progressLogs}
+                />
+              </CardContent>
+            </Card>
 
             <div>
               <div className="flex justify-between items-center mb-4">

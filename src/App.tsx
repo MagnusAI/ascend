@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react'
 import { supabase } from './lib/supabase'
 import { User } from '@supabase/supabase-js'
 import './App.css'
+import AppBar from './components/AppBar'
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null)
@@ -41,35 +42,35 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/profile" element={<Profile />} />
-        <Route 
-          path="/goals/new" 
+        <Route
+          path="/goals/new"
           element={
             user ? (
               <CreateGoal />
             ) : (
               <Navigate to="/dashboard" replace />
             )
-          } 
+          }
         />
-        <Route 
-          path="/goals/:id" 
+        <Route
+          path="/goals/:id"
           element={
             user ? (
               <GoalDetails user={user} />
             ) : (
               <Navigate to="/dashboard" replace />
             )
-          } 
+          }
         />
-        <Route 
-          path="/" 
+        <Route
+          path="/"
           element={
             isAuthenticated ? (
               <Navigate to="/dashboard" replace />
             ) : (
               <Navigate to="/signin" replace />
             )
-          } 
+          }
         />
       </Routes>
     </Router>

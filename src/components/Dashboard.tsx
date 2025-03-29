@@ -7,6 +7,7 @@ import { Card, CardHeader, CardTitle, CardContent } from './atoms/Card'
 import { Button } from './atoms/Button'
 import { CategorySpiderCharts } from './organisms/CategorySpiderCharts'
 import { Plus } from 'lucide-react'
+import AppBar from './AppBar'
 
 export default function Dashboard() {
   const navigate = useNavigate()
@@ -74,6 +75,7 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-dark-900">
+      <AppBar />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="mb-8">
           <div className="flex justify-between items-center">
