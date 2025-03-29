@@ -7,7 +7,8 @@ import AppBar from '../AppBar'
 import Text from '../atoms/Text'
 import EditGoalForm from './EditGoalForm'
 import ProgressLogForm from './ProgressLogForm'
-import { Trash2 } from 'lucide-react'
+import EditProgressLogForm from './EditProgressLogForm'
+import { Trash2, Pencil } from 'lucide-react'
 
 interface GoalDetailsProps {
   user: User
@@ -22,6 +23,7 @@ export default function GoalDetails({ user }: GoalDetailsProps) {
   const [isAddingLog, setIsAddingLog] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [logToDelete, setLogToDelete] = useState<ProgressLog | null>(null)
+  const [logToEdit, setLogToEdit] = useState<ProgressLog | null>(null)
 
   useEffect(() => {
     const fetchGoal = async () => {
@@ -119,6 +121,20 @@ export default function GoalDetails({ user }: GoalDetailsProps) {
     } catch (error) {
       console.error('Error deleting progress log:', error)
       setError('Failed to delete progress log')
+    }
+  }
+
+  const handleLogEditSuccess = async () => {
+    setLogToEdit(null)
+    // Refresh progress logs
+    const { data, error } = await supabase
+      .from('progress_logs')
+      .select('*')
+      .eq('goal_id', id)
+      .order('timestamp', { ascending: false })
+
+    if (!error && data) {
+      setProgressLogs(data)
     }
   }
 
@@ -283,18 +299,57 @@ export default function GoalDetails({ user }: GoalDetailsProps) {
                             </Text>
                           )}
                         </div>
-                        <button
-                          onClick={() => setLogToDelete(log)}
-                          className="p-2 text-red-400 hover:text-red-300 hover:bg-dark-700 rounded-md transition-colors"
-                          title="Delete log"
-                        >
-                          <Trash2 className="h-5 w-5" />
-                        </button>
+                        <div className="flex space-x-2">
+                          <button
+                            onClick={() => setLogToEdit(log)}
+                            className="p-2 text-primary-400 hover:text-primary-300 hover:bg-dark-700 rounded-md transition-colors"
+                            title="Edit log"
+                          >
+                            <Pencil className="h-5 w-5" />
+                          </button>
+                          <button
+                            onClick={() => setLogToDelete(log)}
+                            className="p-2 text-red-400 hover:text-red-300 hover:bg-dark-700 rounded-md transition-colors"
+                            title="Delete log"
+                          >
+                            <Trash2 className="h-5 w-5" />
+                          </button>
+                        </div>
                       </div>
                     ))}
                   </div>
                 )}
               </div>
+
+              {/* Edit Progress Log Dialog */}
+              {logToEdit && (
+                <div className="fixed inset-0 z-50 overflow-y-auto">
+                  <div className="flex min-h-full items-center justify-center p-4 text-center">
+                    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setLogToEdit(null)} />
+                    <div className="relative transform overflow-hidden rounded-lg bg-dark-800 p-6 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                      <div className="absolute right-0 top-0 pr-4 pt-4">
+                        <button
+                          type="button"
+                          onClick={() => setLogToEdit(null)}
+                          className="rounded-md text-gray-400 hover:text-gray-300 focus:outline-none"
+                        >
+                          <span className="sr-only">Close</span>
+                          <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
+                      </div>
+                      <EditProgressLogForm
+                        log={logToEdit}
+                        goal={goal}
+                        user={user}
+                        onSuccess={handleLogEditSuccess}
+                        onCancel={() => setLogToEdit(null)}
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {/* Delete Confirmation Dialog */}
               {logToDelete && (
