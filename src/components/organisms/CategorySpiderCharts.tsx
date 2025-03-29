@@ -26,18 +26,14 @@ export function CategorySpiderCharts({ goals, progressLogs }: CategorySpiderChar
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       {categories.map(category => (
-        <Card key={category}>
-          <CardHeader>
-            <CardTitle className="text-lg">{category}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <SpiderChart
-              goals={goals}
-              progressLogs={progressLogs}
-              category={category}
-            />
-          </CardContent>
-        </Card>
+        <div>
+          <h3 className="text-primary-400 text-lg font-bold">{category}</h3>
+          <SpiderChart
+            goals={goals}
+            progressLogs={progressLogs}
+            category={category}
+          />
+        </div>
       ))}
     </div>
   )

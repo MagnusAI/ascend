@@ -58,34 +58,45 @@ export function SpiderChart({ goals, progressLogs, category }: SpiderChartProps)
           outerRadius="80%"
           data={chartData}
         >
-          <PolarGrid stroke="#374151" />
+          <PolarGrid 
+            stroke="#374151" 
+            strokeDasharray="4 4"
+          />
           <PolarAngleAxis
             dataKey="goal"
-            tick={{ fill: '#9CA3AF' }}
+            tick={{ 
+              fill: '#9CA3AF',
+              fontSize: 12,
+              fontWeight: 500,
+            }}
             tickLine={{ stroke: '#374151' }}
             axisLine={{ stroke: '#374151' }}
+            stroke="#374151"
           />
           <PolarRadiusAxis
             domain={[0, 100]}
             tick={false}
             tickLine={{ stroke: '#374151' }}
             axisLine={{ stroke: '#374151' }}
+            stroke="#374151"
           />
           <Radar
             name="Target"
             dataKey="target"
-            stroke="#4F46E5"
-            fill="#4F46E5"
+            stroke="#6B7280"
+            fill="#6B7280"
             fillOpacity={0.1}
             isAnimationActive={false}
+            dot={false}
           />
           <Radar
             name="Progress"
             dataKey="progress"
-            stroke="#10B981"
-            fill="#10B981"
+            stroke="#F97316"
+            fill="#F97316"
             fillOpacity={0.3}
             isAnimationActive={false}
+            dot={false}
           />
         </RadarChart>
       </ResponsiveContainer>
