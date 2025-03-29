@@ -19,7 +19,7 @@ export function SpiderChart({ goals, progressLogs, category }: SpiderChartProps)
   const chartData = useMemo(() => {
     // Filter goals for the current category
     const categoryGoals = goals.filter(goal => goal.category === category)
-    
+
     // Create data points for each goal
     return categoryGoals.map(goal => {
       // Find the latest progress log for this goal
@@ -29,7 +29,7 @@ export function SpiderChart({ goals, progressLogs, category }: SpiderChartProps)
 
       // Calculate progress percentage
       const currentValue = latestLog ? latestLog.value : 0
-      const progress = goal.target_type === 'above' 
+      const progress = goal.target_type === 'above'
         ? Math.min((currentValue / goal.target_value) * 100, 100)
         : Math.min((goal.target_value / currentValue) * 100, 100)
 
@@ -58,13 +58,13 @@ export function SpiderChart({ goals, progressLogs, category }: SpiderChartProps)
           outerRadius="80%"
           data={chartData}
         >
-          <PolarGrid 
-            stroke="#374151" 
+          <PolarGrid
+            stroke="#374151"
             strokeDasharray="4 4"
           />
           <PolarAngleAxis
             dataKey="goal"
-            tick={{ 
+            tick={{
               fill: '#9CA3AF',
               fontSize: 12,
               fontWeight: 500,

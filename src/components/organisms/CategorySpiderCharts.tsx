@@ -1,6 +1,5 @@
 import { useMemo } from 'react'
 import { Goal, ProgressLog } from '../../types/supabase'
-import { Card, CardHeader, CardTitle, CardContent } from '../atoms/Card'
 import { SpiderChart } from '../molecules/SpiderChart'
 
 interface CategorySpiderChartsProps {

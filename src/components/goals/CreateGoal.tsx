@@ -8,7 +8,6 @@ import { GoalForm } from '../molecules/GoalForm'
 export default function CreateGoal() {
   const navigate = useNavigate()
   const [user, setUser] = useState<User | null>(null)
-  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -17,18 +16,6 @@ export default function CreateGoal() {
     }
     fetchUser()
   }, [])
-
-  if (error) {
-    return (
-      <div className="min-h-screen bg-dark-900">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="bg-red-500/10 border border-red-500 text-red-500 px-4 py-2 rounded-lg">
-            {error}
-          </div>
-        </div>
-      </div>
-    )
-  }
 
   if (!user) {
     return null

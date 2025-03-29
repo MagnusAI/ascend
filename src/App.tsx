@@ -9,7 +9,6 @@ import { useEffect, useState } from 'react'
 import { supabase } from './lib/supabase'
 import { User } from '@supabase/supabase-js'
 import './App.css'
-import AppBar from './components/AppBar'
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null)
